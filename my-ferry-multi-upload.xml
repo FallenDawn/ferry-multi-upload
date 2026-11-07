@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>ferry-multi-upload</Name>
+  <Repository>ghcr.io/fallendawn/ferry-multi-upload:latest</Repository>
+  <Registry>https://ghcr.io</Registry>
+  <Network>bridge</Network>
+  <MyIP></MyIP>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/FallenDawn/ferry-multi-upload</Support>
+  <Project>https://github.com/FallenDawn/ferry-multi-upload</Project>
+  <Overview>Ferry with multi-select photo and file uploads from Android and desktop browsers.</Overview>
+  <Category>Cloud: Network:Web</Category>
+  <WebUI>http://[IP]:[PORT:42817]</WebUI>
+  <TemplateURL></TemplateURL>
+  <Icon></Icon>
+  <ExtraParams></ExtraParams>
+  <PostArgs></PostArgs>
+  <CPUset></CPUset>
+  <DonateText></DonateText>
+  <DonateLink></DonateLink>
+  <Description>GHCR hosted Ferry Multi Upload image. Stop the original Ferry container before switching. Preserve the existing /mnt/user/appdata/ferry data directory. Do not run both containers against the same data directory.</Description>
+  <Networking><Mode>bridge</Mode><Publish><Port><HostPort>42817</HostPort><ContainerPort>42817</ContainerPort><Protocol>tcp</Protocol></Port></Publish></Networking>
+  <Data><Volume><HostDir>/mnt/user/appdata/ferry</HostDir><ContainerDir>/data</ContainerDir><Mode>rw</Mode></Volume></Data>
+  <Environment>
+    <Variable><Value>192.168.1.100</Value><Name>FERRY_HOST_IP</Name><Mode></Mode></Variable>
+    <Variable><Value>42817</Value><Name>FERRY_PORT</Name><Mode></Mode></Variable>
+    <Variable><Value></Value><Name>FERRY_TRUSTED_ORIGIN</Name><Mode></Mode></Variable>
+    <Variable><Value>0.0.0.0</Value><Name>FERRY_LISTEN_HOST</Name><Mode></Mode></Variable>
+  </Environment>
+  <Labels></Labels>
+  <Config Name="Web UI Port" Target="42817" Default="42817" Mode="tcp" Description="Ferry web interface (TCP)" Type="Port" Display="always" Required="true" Mask="false">42817</Config>
+  <Config Name="Ferry Host LAN IP" Target="FERRY_HOST_IP" Default="192.168.1.100" Mode="" Description="Replace with Unraid LAN IPv4." Type="Variable" Display="always" Required="true" Mask="false">192.168.1.100</Config>
+  <Config Name="Ferry Port" Target="FERRY_PORT" Default="42817" Mode="" Description="Container listen port." Type="Variable" Display="advanced" Required="true" Mask="false">42817</Config>
+  <Config Name="Trusted Origin" Target="FERRY_TRUSTED_ORIGIN" Default="" Mode="" Description="Optional HTTPS reverse proxy origin." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Listen Host" Target="FERRY_LISTEN_HOST" Default="0.0.0.0" Mode="" Description="Listen on all container interfaces." Type="Variable" Display="advanced" Required="true" Mask="false">0.0.0.0</Config>
+  <Config Name="Ferry Data" Target="/data" Default="/mnt/user/appdata/ferry" Mode="rw" Description="Existing Ferry data directory." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/ferry</Config>
+</Container>
