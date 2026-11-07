@@ -26,7 +26,7 @@ app = once(app,
     "let pastedAttachment = null;\nlet queuedFiles = [];\nlet uploading = false;\nlet previewAttachment = null;",
     "queue state")
 
-app = block(app, r"function selectedAttachment\(\) \{.*?\n\}",
+app = block(app, r"function selectedAttachment\(\) \{.*?\n\}\n\nfunction clearAttachment\(\) \{.*?\n\}",
 """function selectedAttachments() {
   if (pastedAttachment) return [pastedAttachment];
   return queuedFiles;
