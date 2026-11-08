@@ -2,7 +2,7 @@ name: Build and publish Ferry Multi Upload
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/multi-timelines]
     tags: ["v*"]
   workflow_dispatch:
 

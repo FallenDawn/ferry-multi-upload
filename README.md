@@ -5,7 +5,7 @@ Ferry 的浏览器多文件上传增强版，基于上游固定提交构建，�
 ## 功能
 - Android / iOS / 桌面浏览器的照片和文件选择器支持多选。
 - 多个文件按顺序逐个上传，状态显示当前序号和文件名。
-- 每个文件独立进入 Ferry 时间线。
+- 支持多个 Timeline：新建、重命名、拖拽排序、删除。\n- Timeline 列表和顺序保存在服务器 SQLite 中，所有设备共享同步。\n- 各 Timeline 的文本、图片和文件彼此隔离；删除 Timeline 前确认，内容自动迁移到默认 Timeline。\n- 每个文件独立进入当前选中的 Timeline。
 - 单个文件最大支持 100 MB（前端预检 + 后端硬限制）。
 - 中途失败时，已成功文件从队列移除，剩余文件可重试。
 - 桌面浏览器支持向上传区域拖入多个文件。
@@ -38,3 +38,14 @@ GitHub Actions 在 push 到 main 后自动构建 linux/amd64 并推送：
 
 ## Build
 由 `.github/workflows/docker-publish.yml` 在 GitHub Actions 构建。无需在 Unraid 安装编译工具。
+
+
+多 Timeline 支持已加入，包含服务器持久化、跨设备同步和消息隔离。
+
+Timeline 列表会在设备保持连接时定期刷新，其他设备的新增、改名、排序和删除会同步显示。
+
+切换 Timeline 时会隔离旧请求，避免旧消息串到新时间线。
+
+Timeline synchronization and stale-request guards included in final validation.
+
+验证脚本已修正消息请求保护逻辑。

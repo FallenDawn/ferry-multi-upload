@@ -5,7 +5,9 @@ ARG FERRY_COMMIT=0c3c719fbc5cf716fe373d0e74274b458344fc58
 RUN git clone --filter=blob:none https://github.com/max1874/ferry.git /src \
     && git -C /src checkout "${FERRY_COMMIT}"
 COPY patch-multi-upload.py /tmp/patch-multi-upload.py
-RUN python3 /tmp/patch-multi-upload.py
+COPY patch-timelines.py /tmp/patch-timelines.py
+COPY patches/timelines.go /src/internal/ferry/timelines.go
+RUN python3 /tmp/patch-multi-upload.py && python3 /tmp/patch-timelines.py
 
 FROM --platform=$BUILDPLATFORM golang:1.26.3-alpine AS build
 ARG TARGETOS
