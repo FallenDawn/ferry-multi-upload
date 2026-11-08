@@ -93,7 +93,8 @@ css += """
 .timeline-menu { width:27px; height:27px; flex:0 0 auto; border:0; border-radius:7px; color:var(--muted); background:transparent; cursor:pointer; }
 .timeline-menu:hover { background:var(--hover); color:inherit; }
 @media(max-width:640px) {
- .timeline-manager-head span,.timeline-select span:last-child,.timeline-menu { display:none; }\n .timeline-manager-head button { display:grid; place-items:center; }
+ .timeline-manager-head span,.timeline-select span:last-child,.timeline-menu { display:none; }
+ .timeline-manager-head button { display:grid; place-items:center; }
  .timeline-manager { margin-top:12px; }
  .timeline-row { justify-content:center; padding:3px 0; }
  .timeline-select { flex:0 0 auto; padding:9px; }
