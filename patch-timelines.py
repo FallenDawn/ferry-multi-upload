@@ -16,6 +16,12 @@ def once(src, old, new, label):
         raise SystemExit(f"Timeline patch stopped: expected one match for {label}, found {n}")
     return src.replace(old, new, 1)
 
+def once_in_block(src, start, end, old, new, label):
+    i = src.index(start)
+    j = src.index(end, i)
+    part = once(src[i:j], old, new, label)
+    return src[:i] + part + src[j:]
+
 store = store_path.read_text()
 store = once(store, "if err := s.migrateSchemaColumns(ctx); err != nil {\n\t\treturn err\n\t}\n\treturn nil",
 """if err := s.migrateSchemaColumns(ctx); err != nil {
@@ -229,15 +235,15 @@ app = once(app,
 app = once(app,
 'const response = await authenticatedFetch(`/api/v1/messages?after=${cursor}&after_retraction=${retractionCursor}&limit=200`',
 'const timelineId = activeTimelineId;\n    const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
-app = once(app,
+app = once_in_block(app, "async function loadMessages() {", "async function sendText",
 'if (generation !== authGeneration) return;\n    if (response.status === 401)',
 'if (generation !== authGeneration || timelineId !== activeTimelineId) return;\n    if (response.status === 401)', "stale timeline response guard")
-app = once(app,
+app = once_in_block(app, "async function loadMessages() {", "async function sendText",
 'if (generation !== authGeneration) return;\n    for (const id of payload.retracted_ids',
 'if (generation !== authGeneration || timelineId !== activeTimelineId) return;\n    for (const id of payload.retracted_ids', "stale timeline payload guard")
-app = once(app,
-'  } finally {\n    loading = false;\n  }\n}\n\nasync function sendText',
-'  } finally {\n    loading = false;\n    if (timelineId !== activeTimelineId && currentDevice) loadMessages();\n  }\n}\n\nasync function sendText', "reload after timeline switch")
+app = once_in_block(app, "async function loadMessages() {", "async function sendText",
+'  } finally {\n    loading = false;\n  }\n}\n\n',
+'  } finally {\n    loading = false;\n    if (timelineId !== activeTimelineId && currentDevice) loadMessages();\n  }\n}\n\n', "reload after timeline switch")
 
 app = once(app, 'headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ text }),',
 'headers: { "Content-Type": "application/json", "X-Ferry-Timeline-ID": activeTimelineId },\n    body: JSON.stringify({ text }),', "text timeline header")
