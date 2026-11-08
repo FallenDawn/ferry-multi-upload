@@ -227,7 +227,17 @@ app = once(app,
 async function loadMessages() {""", "timeline client functions")
 app = once(app,
 'const response = await authenticatedFetch(`/api/v1/messages?after=${cursor}&after_retraction=${retractionCursor}&limit=200`',
-'const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(activeTimelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
+'const timelineId = activeTimelineId;\n    const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
+app = once(app,
+'if (generation !== authGeneration) return;\n    if (response.status === 401)',
+'if (generation !== authGeneration || timelineId !== activeTimelineId) return;\n    if (response.status === 401)', "stale timeline response guard")
+app = once(app,
+'if (generation !== authGeneration) return;\n    for (const id of payload.retracted_ids',
+'if (generation !== authGeneration || timelineId !== activeTimelineId) return;\n    for (const id of payload.retracted_ids', "stale timeline payload guard")
+app = once(app,
+'  } finally {\n    loading = false;\n  }\n}\n\nasync function sendText',
+'  } finally {\n    loading = false;\n    if (timelineId !== activeTimelineId && currentDevice) loadMessages();\n  }\n}\n\nasync function sendText', "reload after timeline switch")
+
 app = once(app, 'headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ text }),',
 'headers: { "Content-Type": "application/json", "X-Ferry-Timeline-ID": activeTimelineId },\n    body: JSON.stringify({ text }),', "text timeline header")
 app = once(app, 'const response = await authenticatedFetch("/api/v1/messages/file", { method: "POST", body: form, signal: authController.signal });',
