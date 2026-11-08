@@ -41,3 +41,5 @@ GitHub Actions 在 push 到 main 后自动构建 linux/amd64 并推送：
 
 
 多 Timeline 支持已加入，包含服务器持久化、跨设备同步和消息隔离。
+
+Timeline 列表会在设备保持连接时定期刷新，其他设备的新增、改名、排序和删除会同步显示。
