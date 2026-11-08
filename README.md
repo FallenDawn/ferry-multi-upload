@@ -45,3 +45,5 @@ GitHub Actions 在 push 到 main 后自动构建 linux/amd64 并推送：
 Timeline 列表会在设备保持连接时定期刷新，其他设备的新增、改名、排序和删除会同步显示。
 
 切换 Timeline 时会隔离旧请求，避免旧消息串到新时间线。
+
+Timeline synchronization and stale-request guards included in final validation.
