@@ -40,4 +40,4 @@ GitHub Actions 在 push 到 main 后自动构建 linux/amd64 并推送：
 由 `.github/workflows/docker-publish.yml` 在 GitHub Actions 构建。无需在 Unraid 安装编译工具。
 
 
-多 Timeline 功能正在构建验证中，发布前以 GitHub Actions 结果为准。
+多 Timeline 支持已加入，包含服务器持久化、跨设备同步和消息隔离。
