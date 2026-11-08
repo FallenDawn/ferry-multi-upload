@@ -155,4 +155,18 @@ html = once(html, '<input type="file" id="photo" accept="image/*,video/*" hidden
 html = once(html, '<input type="file" id="file" hidden>',
                  '<input type="file" id="file" multiple hidden>', "file picker")
 html_path.write_text(html, encoding="utf-8")
+# Raise the upstream per-file limit from 64 MiB to 100 MiB.
+model_path = root / "internal/ferry/model.go"
+model = model_path.read_text(encoding="utf-8")
+model = once(model, "MaxFileBytes   = 64 << 20", "MaxFileBytes   = 100 << 20", "100 MiB server upload limit")
+model_path.write_text(model, encoding="utf-8")
+
+# Reject oversized files in the browser before sending any bytes.
+app = app_path.read_text(encoding="utf-8")
+app = once(app,
+    "async function sendFile(file) {\n  const generation = authGeneration;",
+    "async function sendFile(file) {\n  if (file.size > 100 * 1024 * 1024) throw new Error(\\"File exceeds the 100 MB limit.\\");\n  const generation = authGeneration;",
+    "100 MB browser upload validation")
+app_path.write_text(app, encoding="utf-8")
+
 print("Ferry multi-file upload patch applied.")
