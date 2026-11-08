@@ -2,7 +2,6 @@ package ferry
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -169,4 +168,3 @@ func (s *server) reorderTimelines(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-var _ = sql.ErrNoRows
