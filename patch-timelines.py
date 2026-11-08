@@ -204,6 +204,8 @@ async function deleteTimeline(item) {
 
 newTimelineButton.addEventListener("click", createTimeline);
 
+async function loadMessages() {""", "timeline client functions")
+
 app = once(app,
 """function pollServer() {
   if (currentDevice) {
@@ -223,8 +225,6 @@ app = once(app,
     loadSession();
   }
 }""", "cross-device timeline refresh")
-
-async function loadMessages() {""", "timeline client functions")
 app = once(app,
 'const response = await authenticatedFetch(`/api/v1/messages?after=${cursor}&after_retraction=${retractionCursor}&limit=200`',
 'const timelineId = activeTimelineId;\n    const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
