@@ -165,7 +165,7 @@ model_path.write_text(model, encoding="utf-8")
 app = app_path.read_text(encoding="utf-8")
 app = once(app,
     "async function sendFile(file) {\n  const generation = authGeneration;",
-    "async function sendFile(file) {\n  if (file.size > 100 * 1024 * 1024) throw new Error(\\"File exceeds the 100 MB limit.\\");\n  const generation = authGeneration;",
+    'async function sendFile(file) {\n  if (file.size > 100 * 1024 * 1024) throw new Error("File exceeds the 100 MB limit.");\n  const generation = authGeneration;',
     "100 MB browser upload validation")
 app_path.write_text(app, encoding="utf-8")
 
