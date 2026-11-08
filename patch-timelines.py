@@ -93,7 +93,7 @@ css += """
 .timeline-menu { width:27px; height:27px; flex:0 0 auto; border:0; border-radius:7px; color:var(--muted); background:transparent; cursor:pointer; }
 .timeline-menu:hover { background:var(--hover); color:inherit; }
 @media(max-width:640px) {
- .timeline-manager-head span,.timeline-manager-head button,.timeline-select span:last-child,.timeline-menu { display:none; }
+ .timeline-manager-head span,.timeline-select span:last-child,.timeline-menu { display:none; }\n .timeline-manager-head button { display:grid; place-items:center; }
  .timeline-manager { margin-top:12px; }
  .timeline-row { justify-content:center; padding:3px 0; }
  .timeline-select { flex:0 0 auto; padding:9px; }
@@ -111,7 +111,7 @@ app = once(app, 'let activeView = "timeline";',
 """let activeView = "timeline";
 let timelines = [];
 const DEFAULT_TIMELINE_ID = "00000000000000000000000000000000";
-let activeTimelineId = localStorage.getItem("ferry_active_timeline") || DEFAULT_TIMELINE_ID;
+let activeTimelineId = (() => { try { return localStorage.getItem("ferry_active_timeline") || DEFAULT_TIMELINE_ID; } catch { return DEFAULT_TIMELINE_ID; } })();
 let draggingTimelineId = ""; """, "timeline state")
 app = once(app, 'async function loadMessages() {',
 """async function loadTimelines() {
@@ -171,7 +171,7 @@ async function saveTimelineOrder(ordered) {
 
 async function selectTimeline(id) {
   if (id === activeTimelineId) return;
-  activeTimelineId = id; localStorage.setItem("ferry_active_timeline", id);
+  activeTimelineId = id; try { localStorage.setItem("ferry_active_timeline", id); } catch {}
   renderTimelineList(); resetTimeline(); await loadMessages();
 }
 
@@ -196,7 +196,7 @@ async function deleteTimeline(item) {
   if (!confirm('Delete "'+item.name+'"? Its messages and files will be moved to the default Timeline.')) return;
   const response = await authenticatedFetch("/api/v1/timelines/"+item.id, { method:"DELETE", signal:authController.signal });
   if (!response.ok) { alert(await readError(response)); return; }
-  if (activeTimelineId === item.id) { activeTimelineId = DEFAULT_TIMELINE_ID; localStorage.setItem("ferry_active_timeline", activeTimelineId); resetTimeline(); }
+  if (activeTimelineId === item.id) { activeTimelineId = DEFAULT_TIMELINE_ID; try { localStorage.setItem("ferry_active_timeline", activeTimelineId); } catch {} resetTimeline(); }
   await loadTimelines(); await loadMessages();
 }
 
