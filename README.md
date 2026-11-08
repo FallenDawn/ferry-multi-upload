@@ -47,3 +47,5 @@ Timeline 列表会在设备保持连接时定期刷新，其他设备的新增�
 切换 Timeline 时会隔离旧请求，避免旧消息串到新时间线。
 
 Timeline synchronization and stale-request guards included in final validation.
+
+验证脚本已修正消息请求保护逻辑。
