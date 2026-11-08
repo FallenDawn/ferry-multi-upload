@@ -121,7 +121,7 @@ app = once(app, 'async function loadMessages() {',
   const payload = await response.json();
   timelines = payload.timelines || [];
   if (!timelines.some((item) => item.id === activeTimelineId)) activeTimelineId = timelines[0]?.id || DEFAULT_TIMELINE_ID;
-  localStorage.setItem("ferry_active_timeline", activeTimelineId);
+  try { localStorage.setItem("ferry_active_timeline", activeTimelineId); } catch {}
   renderTimelineList();
 }
 
@@ -205,7 +205,7 @@ newTimelineButton.addEventListener("click", createTimeline);
 async function loadMessages() {""", "timeline client functions")
 app = once(app,
 'const response = await authenticatedFetch(`/api/v1/messages?after=${cursor}&after_retraction=${retractionCursor}&limit=200`',
-'const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(activeTimelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
+'const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
 app = once(app, 'headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ text }),',
 'headers: { "Content-Type": "application/json", "X-Ferry-Timeline-ID": activeTimelineId },\n    body: JSON.stringify({ text }),', "text timeline header")
 app = once(app, 'const response = await authenticatedFetch("/api/v1/messages/file", { method: "POST", body: form, signal: authController.signal });',
