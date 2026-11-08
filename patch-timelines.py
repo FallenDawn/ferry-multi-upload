@@ -119,8 +119,10 @@ app = once(app, 'async function loadMessages() {',
   if (response.status === 401) { showAccess("This device is no longer connected."); return; }
   if (!response.ok) throw new Error(await readError(response));
   const payload = await response.json();
+  const previousTimelineId = activeTimelineId;
   timelines = payload.timelines || [];
   if (!timelines.some((item) => item.id === activeTimelineId)) activeTimelineId = timelines[0]?.id || DEFAULT_TIMELINE_ID;
+  if (previousTimelineId !== activeTimelineId) resetTimeline();
   try { localStorage.setItem("ferry_active_timeline", activeTimelineId); } catch {}
   renderTimelineList();
 }
@@ -201,6 +203,26 @@ async function deleteTimeline(item) {
 }
 
 newTimelineButton.addEventListener("click", createTimeline);
+
+app = once(app,
+"""function pollServer() {
+  if (currentDevice) {
+    loadMessages();
+  } else if (deviceToken) {
+    loadSession();
+  }
+}""",
+"""function pollServer() {
+  if (currentDevice) {
+    loadTimelines().then(() => loadMessages()).catch((error) => {
+      if (error.name === "AbortError") return;
+      connectionError = error.message;
+      renderStatus();
+    });
+  } else if (deviceToken) {
+    loadSession();
+  }
+}""", "cross-device timeline refresh")
 
 async function loadMessages() {""", "timeline client functions")
 app = once(app,
