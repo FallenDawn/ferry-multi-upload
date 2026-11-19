@@ -232,9 +232,12 @@ app = once(app,
     loadSession();
   }
 }""", "cross-device timeline refresh")
+app = once_in_block(app, "async function loadMessages() {", "async function sendText",
+'  const generation = authGeneration;\n  loading = true;',
+'  const generation = authGeneration;\n  const timelineId = activeTimelineId;\n  loading = true;', "capture selected timeline outside try block")
 app = once(app,
 'const response = await authenticatedFetch(`/api/v1/messages?after=${cursor}&after_retraction=${retractionCursor}&limit=200`',
-'const timelineId = activeTimelineId;\n    const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
+'const response = await authenticatedFetch(`/api/v1/messages?timeline_id=${encodeURIComponent(timelineId)}&after=${cursor}&after_retraction=${retractionCursor}&limit=200`', "timeline message query")
 app = once_in_block(app, "async function loadMessages() {", "async function sendText",
 'if (generation !== authGeneration) return;\n    if (response.status === 401)',
 'if (generation !== authGeneration || timelineId !== activeTimelineId) return;\n    if (response.status === 401)', "stale timeline response guard")
